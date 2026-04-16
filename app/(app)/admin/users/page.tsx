@@ -222,7 +222,7 @@ export default function AdminUsersPage() {
 
   if (currentUser?.role !== "ADMIN") {
     return (
-      <div className="flex flex-col items-center justify-center gap-4 p-12 text-center">
+      <div className="flex flex-col items-center justify-center gap-4 py-16 text-center">
         <ShieldCheck className="h-12 w-12 text-muted-foreground" />
         <h2 className="text-xl font-semibold">Access Denied</h2>
         <p className="text-muted-foreground text-sm">
@@ -233,19 +233,16 @@ export default function AdminUsersPage() {
   }
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold flex items-center gap-2">
-            <ShieldCheck className="h-6 w-6" />
-            User Management
-          </h1>
-          <p className="text-muted-foreground text-sm mt-1">
+    <div className="space-y-6">
+      <div className="flex items-start justify-between gap-4 mb-6">
+        <div className="min-w-0">
+          <h1 className="text-xl font-semibold tracking-tight">User Management</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">
             Manage system users and their roles.
           </p>
         </div>
         <Button size="sm" onClick={() => setShowCreate(true)}>
-          <Plus className="h-4 w-4 mr-1" />
+          <Plus className="h-4 w-4 mr-2" />
           Create User
         </Button>
       </div>
@@ -258,8 +255,9 @@ export default function AdminUsersPage() {
           ))}
         </div>
       ) : !users?.length ? (
-        <div className="text-center py-12 text-muted-foreground text-sm">
-          No users found.
+        <div className="flex flex-col items-center justify-center py-16 text-center">
+          <ShieldCheck className="h-10 w-10 text-muted-foreground mb-3" />
+          <h3 className="text-sm font-medium">No users found</h3>
         </div>
       ) : (
         <Table>

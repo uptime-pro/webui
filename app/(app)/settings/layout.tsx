@@ -18,9 +18,9 @@ export default function SettingsLayout({
   const pathname = usePathname();
 
   return (
-    <div className="flex h-full">
-      <nav className="w-48 shrink-0 border-r p-3 space-y-1">
-        <p className="px-3 py-1 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+    <div className="flex gap-8 h-full">
+      <nav className="w-44 shrink-0 space-y-1">
+        <p className="px-3 py-1 text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
           Settings
         </p>
         {sections.map(({ href, label }) => (
@@ -29,14 +29,16 @@ export default function SettingsLayout({
             href={href}
             className={cn(
               "flex items-center rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground",
-              pathname === href && "bg-accent text-accent-foreground",
+              pathname === href
+                ? "bg-accent text-accent-foreground"
+                : "text-muted-foreground",
             )}
           >
             {label}
           </Link>
         ))}
       </nav>
-      <main className="flex-1 overflow-auto">{children}</main>
+      <main className="flex-1 min-w-0">{children}</main>
     </div>
   );
 }

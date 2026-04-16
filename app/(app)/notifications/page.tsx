@@ -1,9 +1,11 @@
 "use client";
+import { Bell } from "lucide-react";
 import { useState } from "react";
 import { NotificationForm } from "@/components/notification/notification-form";
+import { PageHeader } from "@/components/shell/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -30,7 +32,7 @@ const TYPE_LABELS: Record<string, string> = {
   ntfy: "ntfy",
 };
 
-function NotificationRow({
+function NotificationCard({
   notification,
   onEdit,
 }: {
@@ -61,30 +63,31 @@ function NotificationRow({
 
   return (
     <Card>
-      <CardContent className="flex items-center justify-between gap-4 py-4">
-        <div className="flex items-center gap-3 min-w-0">
-          <div className="min-w-0">
-            <p className="font-medium truncate">{notification.name}</p>
-            <div className="flex items-center gap-2 mt-1">
-              <Badge variant="secondary" className="text-xs">
-                {TYPE_LABELS[notification.type] ?? notification.type}
+      <CardHeader className="pb-3">
+        <div className="flex items-start justify-between gap-2">
+          <CardTitle className="text-sm font-medium truncate">
+            {notification.name}
+          </CardTitle>
+          <div className="flex items-center gap-1.5 shrink-0">
+            <Badge variant="secondary" className="text-xs">
+              {TYPE_LABELS[notification.type] ?? notification.type}
+            </Badge>
+            {notification.isDefault && (
+              <Badge variant="default" className="text-xs">
+                Default
               </Badge>
-              {notification.isDefault && (
-                <Badge variant="default" className="text-xs">
-                  Default
-                </Badge>
-              )}
-            </div>
-            {testMessage && (
-              <p className="text-xs text-green-600 mt-1">{testMessage}</p>
-            )}
-            {testError && (
-              <p className="text-xs text-destructive mt-1">{testError}</p>
             )}
           </div>
         </div>
-
-        <div className="flex items-center gap-2 shrink-0">
+      </CardHeader>
+      <CardContent className="pt-0 space-y-3">
+        {testMessage && (
+          <p className="text-xs text-green-600 dark:text-green-400">{testMessage}</p>
+        )}
+        {testError && (
+          <p className="text-xs text-destructive">{testError}</p>
+        )}
+        <div className="flex items-center gap-2">
           <Button
             variant="outline"
             size="sm"
@@ -101,7 +104,7 @@ function NotificationRow({
             Edit
           </Button>
           {confirmDelete ? (
-            <div className="flex items-center gap-1">
+            <>
               <Button
                 variant="destructive"
                 size="sm"
@@ -117,12 +120,12 @@ function NotificationRow({
               >
                 Cancel
               </Button>
-            </div>
+            </>
           ) : (
             <Button
               variant="ghost"
               size="sm"
-              className="text-destructive hover:text-destructive"
+              className="text-destructive hover:text-destructive ml-auto"
               onClick={() => setConfirmDelete(true)}
             >
               Delete
@@ -155,45 +158,38 @@ export default function NotificationsPage() {
   }
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">Notification Channels</h1>
-          <p className="text-muted-foreground text-sm mt-1">
-            Manage where alerts are sent when monitors go down or recover.
-          </p>
-        </div>
-        <Button onClick={openCreate}>Add Notification</Button>
-      </div>
+    <div className="space-y-6">
+      <PageHeader
+        title="Notification Channels"
+        description="Manage where alerts are sent when monitors go down or recover."
+        action={<Button size="sm" onClick={openCreate}>Add Channel</Button>}
+      />
 
       {isLoading && (
-        <div className="space-y-3">
-          {[1, 2, 3].map((i) => (
-            <Skeleton key={i} className="h-20 w-full" />
+        <div className="grid gap-4 sm:grid-cols-2">
+          {[1, 2, 3, 4].map((i) => (
+            <Skeleton key={i} className="h-32 w-full" />
           ))}
         </div>
       )}
 
       {!isLoading && (!notifications || notifications.length === 0) && (
-        <Card>
-          <CardContent className="flex flex-col items-center justify-center py-12 text-center">
-            <p className="text-muted-foreground">
-              No notification channels configured.
-            </p>
-            <p className="text-sm text-muted-foreground mt-1">
-              Add one to receive alerts when your monitors change status.
-            </p>
-            <Button className="mt-4" onClick={openCreate}>
-              Add Notification
-            </Button>
-          </CardContent>
-        </Card>
+        <div className="flex flex-col items-center justify-center py-16 text-center">
+          <Bell className="h-10 w-10 text-muted-foreground mb-3" />
+          <h3 className="text-sm font-medium">No channels yet</h3>
+          <p className="text-sm text-muted-foreground mt-1">
+            Add a channel to receive alerts when your monitors change status.
+          </p>
+          <Button size="sm" className="mt-4" onClick={openCreate}>
+            Add Channel
+          </Button>
+        </div>
       )}
 
       {!isLoading && notifications && notifications.length > 0 && (
-        <div className="space-y-3">
+        <div className="grid gap-4 sm:grid-cols-2">
           {notifications.map((n) => (
-            <NotificationRow key={n.id} notification={n} onEdit={openEdit} />
+            <NotificationCard key={n.id} notification={n} onEdit={openEdit} />
           ))}
         </div>
       )}

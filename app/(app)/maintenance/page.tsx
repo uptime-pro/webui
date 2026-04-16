@@ -1,6 +1,8 @@
 "use client";
 import Link from "next/link";
+import { Wrench, Plus } from "lucide-react";
 import { useState } from "react";
+import { PageHeader } from "@/components/shell/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -129,19 +131,19 @@ export default function MaintenancePage() {
   const { data: windows, isLoading, error } = useMaintenanceWindows();
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">Maintenance Windows</h1>
-          <p className="text-muted-foreground text-sm mt-1">
-            Schedule planned downtime so monitors don&apos;t alert during
-            maintenance.
-          </p>
-        </div>
-        <Button asChild>
-          <Link href="/maintenance/new">New Maintenance Window</Link>
-        </Button>
-      </div>
+    <div className="space-y-6">
+      <PageHeader
+        title="Maintenance Windows"
+        description="Schedule planned downtime so monitors don't alert during maintenance."
+        action={
+          <Button size="sm" asChild>
+            <Link href="/maintenance/new">
+              <Plus className="h-4 w-4 mr-2" />
+              New Window
+            </Link>
+          </Button>
+        }
+      />
 
       {isLoading && (
         <div className="space-y-3">
@@ -160,19 +162,16 @@ export default function MaintenancePage() {
       )}
 
       {!isLoading && !error && windows?.length === 0 && (
-        <Card>
-          <CardContent className="flex flex-col items-center justify-center py-12 text-center">
-            <p className="text-muted-foreground">
-              No maintenance windows configured.
-            </p>
-            <p className="text-sm text-muted-foreground mt-1">
-              Create one to pause alerting during planned maintenance.
-            </p>
-            <Button className="mt-4" asChild>
-              <Link href="/maintenance/new">New Maintenance Window</Link>
-            </Button>
-          </CardContent>
-        </Card>
+        <div className="flex flex-col items-center justify-center py-16 text-center">
+          <Wrench className="h-10 w-10 text-muted-foreground mb-3" />
+          <h3 className="text-sm font-medium">No maintenance windows</h3>
+          <p className="text-sm text-muted-foreground mt-1">
+            Create one to pause alerting during planned maintenance.
+          </p>
+          <Button size="sm" className="mt-4" asChild>
+            <Link href="/maintenance/new">New Window</Link>
+          </Button>
+        </div>
       )}
 
       {!isLoading && windows && windows.length > 0 && (

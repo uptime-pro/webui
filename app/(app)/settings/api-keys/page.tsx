@@ -178,19 +178,19 @@ export default function ApiKeysPage() {
   const [deleteTarget, setDeleteTarget] = useState<ApiKey | null>(null);
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold flex items-center gap-2">
-            <Key className="h-6 w-6" />
+    <div className="space-y-6">
+      <div className="flex items-start justify-between gap-4 mb-6">
+        <div className="min-w-0">
+          <h1 className="text-xl font-semibold tracking-tight flex items-center gap-2">
+            <Key className="h-5 w-5" />
             API Keys
           </h1>
-          <p className="text-muted-foreground text-sm mt-1">
+          <p className="text-sm text-muted-foreground mt-0.5">
             Manage programmatic access to your account.
           </p>
         </div>
         <Button size="sm" onClick={() => setShowCreate(true)}>
-          <Plus className="h-4 w-4 mr-1" />
+          <Plus className="h-4 w-4 mr-2" />
           Create API Key
         </Button>
       </div>
@@ -203,9 +203,10 @@ export default function ApiKeysPage() {
           ))}
         </div>
       ) : !apiKeys?.length ? (
-        <div className="flex flex-col items-center justify-center gap-4 py-12 text-center">
-          <Key className="h-10 w-10 text-muted-foreground" />
-          <p className="text-muted-foreground text-sm">No API keys yet.</p>
+        <div className="flex flex-col items-center justify-center py-16 text-center">
+          <Key className="h-10 w-10 text-muted-foreground mb-3" />
+          <h3 className="text-sm font-medium">No API keys yet</h3>
+          <p className="text-sm text-muted-foreground mt-1">Create a key to access the API programmatically.</p>
         </div>
       ) : (
         <Table>

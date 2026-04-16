@@ -48,7 +48,7 @@ export default function SettingsSectionPage({
 
   if (isLoading) {
     return (
-      <div className="p-6 space-y-4 max-w-xl">
+      <div className="space-y-4 max-w-xl">
         <Skeleton className="h-8 w-48" />
         <Skeleton className="h-10 w-full" />
         <Skeleton className="h-10 w-full" />
@@ -59,29 +59,25 @@ export default function SettingsSectionPage({
 
   if (error) {
     return (
-      <div className="p-6">
-        <p className="text-sm text-destructive">
-          {error instanceof Error ? error.message : "Failed to load settings"}
-        </p>
-      </div>
+      <p className="text-sm text-destructive">
+        {error instanceof Error ? error.message : "Failed to load settings"}
+      </p>
     );
   }
 
   if (section !== "general" && section !== "monitoring") {
     return (
-      <div className="p-6">
-        <p className="text-sm text-muted-foreground">Section not found.</p>
-      </div>
+      <p className="text-sm text-muted-foreground">Section not found.</p>
     );
   }
 
   return (
-    <div className="p-6 max-w-xl">
+    <div className="max-w-xl">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold capitalize">
+        <h1 className="text-xl font-semibold tracking-tight">
           {section === "general" ? "General" : "Monitoring"}
         </h1>
-        <p className="text-muted-foreground text-sm mt-1">
+        <p className="text-sm text-muted-foreground mt-0.5">
           {section === "general"
             ? "Basic application settings."
             : "Default monitoring behaviour settings."}

@@ -1,6 +1,8 @@
 "use client";
 import Link from "next/link";
+import { Globe, Plus } from "lucide-react";
 import { useState } from "react";
+import { PageHeader } from "@/components/shell/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -31,7 +33,7 @@ function StatusPageRow({ page }: { page: StatusPage }) {
             >
               /status/{page.slug}
             </a>
-            <Badge variant={page.published ? "default" : "secondary"}>
+            <Badge variant={page.published ? "default" : "secondary"} className="text-xs">
               {page.published ? "Published" : "Draft"}
             </Badge>
           </div>
@@ -81,13 +83,19 @@ export default function StatusPagesPage() {
   const { data: pages, isLoading, error } = useStatusPages();
 
   return (
-    <div className="p-6 space-y-4">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Status Pages</h1>
-        <Button asChild>
-          <Link href="/status-pages/new">New Status Page</Link>
-        </Button>
-      </div>
+    <div className="space-y-6">
+      <PageHeader
+        title="Status Pages"
+        description="Public pages showing the status of your monitored services."
+        action={
+          <Button size="sm" asChild>
+            <Link href="/status-pages/new">
+              <Plus className="h-4 w-4 mr-2" />
+              New Status Page
+            </Link>
+          </Button>
+        }
+      />
 
       {isLoading && (
         <div className="space-y-3">
@@ -99,26 +107,30 @@ export default function StatusPagesPage() {
 
       {error && (
         <p className="text-sm text-destructive">
-          {error instanceof Error
-            ? error.message
-            : "Failed to load status pages"}
+          {error instanceof Error ? error.message : "Failed to load status pages"}
         </p>
       )}
 
       {!isLoading && !error && pages?.length === 0 && (
-        <div className="text-center py-12 text-muted-foreground">
-          <p>No status pages yet.</p>
-          <p className="text-sm mt-1">
+        <div className="flex flex-col items-center justify-center py-16 text-center">
+          <Globe className="h-10 w-10 text-muted-foreground mb-3" />
+          <h3 className="text-sm font-medium">No status pages yet</h3>
+          <p className="text-sm text-muted-foreground mt-1">
             Create your first status page to get started.
           </p>
+          <Button size="sm" className="mt-4" asChild>
+            <Link href="/status-pages/new">New Status Page</Link>
+          </Button>
         </div>
       )}
 
-      <div className="space-y-3">
-        {pages?.map((page) => (
-          <StatusPageRow key={page.id} page={page} />
-        ))}
-      </div>
+      {!isLoading && !error && pages && pages.length > 0 && (
+        <div className="space-y-3">
+          {pages.map((page) => (
+            <StatusPageRow key={page.id} page={page} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

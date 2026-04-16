@@ -1,5 +1,7 @@
 "use client";
+import { Tag as TagIcon, Plus } from "lucide-react";
 import { useState } from "react";
+import { PageHeader } from "@/components/shell/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -179,16 +181,17 @@ export default function TagsPage() {
   }
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">Tags</h1>
-          <p className="text-muted-foreground text-sm mt-1">
-            Organize monitors with colored labels.
-          </p>
-        </div>
-        <Button onClick={openCreate}>New Tag</Button>
-      </div>
+    <div className="space-y-6">
+      <PageHeader
+        title="Tags"
+        description="Organize monitors with colored labels."
+        action={
+          <Button size="sm" onClick={openCreate}>
+            <Plus className="h-4 w-4 mr-2" />
+            New Tag
+          </Button>
+        }
+      />
 
       {isLoading && (
         <div className="space-y-3">
@@ -205,17 +208,16 @@ export default function TagsPage() {
       )}
 
       {!isLoading && !error && tags?.length === 0 && (
-        <Card>
-          <CardContent className="flex flex-col items-center justify-center py-12 text-center">
-            <p className="text-muted-foreground">No tags yet.</p>
-            <p className="text-sm text-muted-foreground mt-1">
-              Create tags to organize and filter your monitors.
-            </p>
-            <Button className="mt-4" onClick={openCreate}>
-              New Tag
-            </Button>
-          </CardContent>
-        </Card>
+        <div className="flex flex-col items-center justify-center py-16 text-center">
+          <TagIcon className="h-10 w-10 text-muted-foreground mb-3" />
+          <h3 className="text-sm font-medium">No tags yet</h3>
+          <p className="text-sm text-muted-foreground mt-1">
+            Create tags to organize and filter your monitors.
+          </p>
+          <Button size="sm" className="mt-4" onClick={openCreate}>
+            New Tag
+          </Button>
+        </div>
       )}
 
       {!isLoading && tags && tags.length > 0 && (
