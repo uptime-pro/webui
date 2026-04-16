@@ -10,6 +10,7 @@ import {
   LayoutDashboard,
   LogOut,
   Plus,
+  Server,
   Settings,
   ShieldCheck,
   Tag,
@@ -49,6 +50,7 @@ const navSettings = [
 
 const navAdmin = [
   { href: "/admin/users", label: "Users", icon: ShieldCheck },
+  { href: "/infrastructure", label: "Infrastructure", icon: Server },
 ];
 
 export function AppSidebar() {
