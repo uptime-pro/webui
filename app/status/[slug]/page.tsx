@@ -11,7 +11,7 @@ import { SubscribeForm } from "./subscribe-form";
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
 
 async function getStatusPage(slug: string): Promise<PublicStatusPage | null> {
-  const res = await fetch(`${API_BASE}/api/v1/status-pages/public/${slug}`, {
+  const res = await fetch(`${API_BASE}/api/v1/status/${slug}`, {
     next: { revalidate: 60 },
   });
   if (res.status === 404) return null;
