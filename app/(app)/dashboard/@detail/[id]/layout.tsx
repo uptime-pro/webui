@@ -22,9 +22,9 @@ export default function MonitorDetailLayout({
 
   return (
     <div className="flex flex-col h-full">
-      <div className="border-b px-4 pt-4">
+      <div className="border-b px-4">
         <Tabs value={pathname}>
-          <TabsList>
+          <TabsList variant="line">
             {tabs.map((tab) => (
               <TabsTrigger key={tab.href} value={tab.href} render={<Link href={tab.href} />}>
                 {tab.label}

@@ -25,6 +25,8 @@ export default function ChartPage({
 
   const chartData = heartbeats
     ?.filter((hb) => hb.ping !== null && hb.status)
+    .slice()
+    .reverse()
     .map((hb) => ({
       time: new Date(hb.createdAt).toLocaleTimeString([], {
         hour: "2-digit",
@@ -42,32 +44,60 @@ export default function ChartPage({
   }
 
   return (
-    <div className="space-y-2">
-      <h3 className="text-sm font-medium">Response Time (ms)</h3>
-      <ResponsiveContainer width="100%" height={300}>
-        <LineChart data={chartData}>
-          <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-          <XAxis
-            dataKey="time"
-            tick={{ fontSize: 11 }}
-            interval="preserveStartEnd"
-          />
-          <YAxis tick={{ fontSize: 11 }} unit="ms" width={55} />
-          <Tooltip
-            formatter={(value) => [
-              value != null ? `${value}ms` : "N/A",
-              "Ping",
-            ]}
-          />
-          <Line
-            type="monotone"
-            dataKey="ping"
-            stroke="hsl(var(--primary))"
-            dot={false}
-            strokeWidth={2}
-          />
-        </LineChart>
-      </ResponsiveContainer>
+    <div className="space-y-3">
+      <div className="flex items-center justify-between">
+        <h3 className="text-sm font-medium">Response Time</h3>
+        <span className="text-xs text-muted-foreground">{chartData.length} data points</span>
+      </div>
+      <div className="rounded-lg border bg-card p-4">
+        <ResponsiveContainer width="100%" height={280}>
+          <LineChart data={chartData} margin={{ top: 4, right: 8, left: 0, bottom: 4 }}>
+            <CartesianGrid
+              strokeDasharray="3 3"
+              stroke="currentColor"
+              strokeOpacity={0.1}
+              vertical={false}
+            />
+            <XAxis
+              dataKey="time"
+              tick={{ fontSize: 11, fill: "currentColor", opacity: 0.5 }}
+              axisLine={false}
+              tickLine={false}
+              interval="preserveStartEnd"
+            />
+            <YAxis
+              tick={{ fontSize: 11, fill: "currentColor", opacity: 0.5 }}
+              axisLine={false}
+              tickLine={false}
+              unit="ms"
+              width={52}
+            />
+            <Tooltip
+              contentStyle={{
+                backgroundColor: "var(--color-card)",
+                borderColor: "var(--color-border)",
+                borderRadius: "var(--radius)",
+                fontSize: "12px",
+              }}
+              labelStyle={{ color: "var(--color-foreground)", opacity: 0.6 }}
+              itemStyle={{ color: "var(--color-chart-1)" }}
+              formatter={(value) => [
+                value != null ? `${value}ms` : "N/A",
+                "Ping",
+              ]}
+            />
+            <Line
+              type="monotone"
+              dataKey="ping"
+              stroke="var(--color-chart-1)"
+              dot={false}
+              strokeWidth={2}
+              activeDot={{ r: 4, strokeWidth: 0 }}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 }
+
