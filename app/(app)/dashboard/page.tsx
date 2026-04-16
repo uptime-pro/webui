@@ -1,5 +1,5 @@
-import { MonitorList } from "@/components/monitor/monitor-list";
+import { MonitorPanel } from "@/components/monitor/monitor-panel";
 
 export default function DashboardPage() {
-  return <MonitorList />;
+  return <MonitorPanel />;
 }
