@@ -23,7 +23,7 @@ function StatusPageRow({ page }: { page: StatusPage }) {
     <Card>
       <CardContent className="flex items-center justify-between gap-4 py-4">
         <div className="min-w-0 flex-1">
-          <p className="font-medium truncate">{page.name}</p>
+          <p className="font-medium truncate">{page.title}</p>
           <div className="flex items-center gap-2 mt-1 flex-wrap">
             <a
               href={`/status/${page.slug}`}

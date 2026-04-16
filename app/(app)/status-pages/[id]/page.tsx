@@ -48,7 +48,7 @@ export default function StatusPageEditorPage({
   const updatePage = useUpdateStatusPage(numId);
   const setMonitors = useSetStatusPageMonitors(numId);
 
-  const [name, setName] = useState("");
+  const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
   const [description, setDescription] = useState("");
   const [customDomain, setCustomDomain] = useState("");
@@ -58,7 +58,7 @@ export default function StatusPageEditorPage({
 
   useEffect(() => {
     if (page) {
-      setName(page.name);
+      setTitle(page.title);
       setSlug(page.slug);
       setDescription(page.description ?? "");
       setCustomDomain(page.customDomain ?? "");
@@ -76,7 +76,7 @@ export default function StatusPageEditorPage({
   async function handleSaveGeneral(e: React.FormEvent) {
     e.preventDefault();
     await updatePage.mutateAsync({
-      name,
+      title,
       slug,
       description: description || undefined,
       customDomain: customDomain || undefined,
@@ -122,7 +122,7 @@ export default function StatusPageEditorPage({
     <div className="p-6 space-y-6">
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="sm" render={<Link href="/status-pages" />}>← Back</Button>
-        <h1 className="text-2xl font-bold truncate">{page.name}</h1>
+        <h1 className="text-2xl font-bold truncate">{page.title}</h1>
       </div>
 
       <Tabs defaultValue="general">
@@ -135,11 +135,11 @@ export default function StatusPageEditorPage({
         <TabsContent value="general" className="mt-4 max-w-xl">
           <form onSubmit={handleSaveGeneral} className="space-y-4">
             <div className="space-y-1">
-              <Label htmlFor="name">Name</Label>
+              <Label htmlFor="title">Title</Label>
               <Input
-                id="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                id="title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
                 required
               />
             </div>

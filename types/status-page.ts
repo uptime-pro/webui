@@ -42,7 +42,7 @@ export interface MaintenanceWindow {
 export interface StatusPage {
   id: number;
   userId: number;
-  name: string;
+  title: string;
   slug: string;
   description?: string;
   customDomain?: string;
@@ -54,7 +54,7 @@ export interface StatusPage {
 
 export interface PublicStatusPage {
   id: number;
-  name: string;
+  title: string;
   slug: string;
   description?: string;
   logoUrl?: string;
@@ -65,7 +65,7 @@ export interface PublicStatusPage {
 }
 
 export interface CreateStatusPageDto {
-  name: string;
+  title: string;
   slug: string;
   description?: string;
   customDomain?: string;
@@ -74,7 +74,7 @@ export interface CreateStatusPageDto {
 }
 
 export interface UpdateStatusPageDto {
-  name?: string;
+  title?: string;
   slug?: string;
   description?: string;
   customDomain?: string;

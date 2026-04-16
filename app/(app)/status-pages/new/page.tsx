@@ -20,14 +20,14 @@ export default function NewStatusPagePage() {
   const router = useRouter();
   const createPage = useCreateStatusPage();
 
-  const [name, setName] = useState("");
+  const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
   const [slugEdited, setSlugEdited] = useState(false);
   const [description, setDescription] = useState("");
   const [published, setPublished] = useState(false);
 
-  function handleNameChange(value: string) {
-    setName(value);
+  function handleTitleChange(value: string) {
+    setTitle(value);
     if (!slugEdited) {
       setSlug(slugify(value));
     }
@@ -41,7 +41,7 @@ export default function NewStatusPagePage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     const data = await createPage.mutateAsync({
-      name,
+      title,
       slug,
       description: description || undefined,
       published,
@@ -58,11 +58,11 @@ export default function NewStatusPagePage() {
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-1">
-          <Label htmlFor="name">Name</Label>
+          <Label htmlFor="title">Title</Label>
           <Input
-            id="name"
-            value={name}
-            onChange={(e) => handleNameChange(e.target.value)}
+            id="title"
+            value={title}
+            onChange={(e) => handleTitleChange(e.target.value)}
             placeholder="My Service Status"
             required
           />

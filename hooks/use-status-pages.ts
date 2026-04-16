@@ -72,11 +72,13 @@ export function useSetStatusPageMonitors(id: number) {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (monitorIds: number[]) =>
-      apiRequest<{ monitorIds: number[] }>(
+      apiRequest<{ monitors: { monitorId: number }[] }>(
         `/api/v1/status-pages/${id}/monitors`,
         {
           method: "PUT",
-          body: JSON.stringify({ monitorIds }),
+          body: JSON.stringify({
+            monitors: monitorIds.map((monitorId) => ({ monitorId })),
+          }),
         },
       ),
     onSuccess: () =>

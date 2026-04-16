@@ -145,13 +145,13 @@ export default async function PublicStatusPagePage({
         {page.logoUrl && (
           <Image
             src={page.logoUrl}
-            alt={page.name}
+            alt={page.title}
             width={160}
             height={40}
             className="h-10 w-auto mb-4"
           />
         )}
-        <h1 className="text-3xl font-bold">{page.name}</h1>
+        <h1 className="text-3xl font-bold">{page.title}</h1>
         {page.description && (
           <p className="text-muted-foreground">{page.description}</p>
         )}
