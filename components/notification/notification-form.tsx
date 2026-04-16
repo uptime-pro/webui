@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { CheckCircle2, FlaskConical, Loader2 } from "lucide-react";
 import { ProviderFields } from "@/components/notification/provider-fields";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,6 +16,8 @@ import { Switch } from "@/components/ui/switch";
 import {
   useCreateNotification,
   useUpdateNotification,
+  useTestNotification,
+  useTestNotificationDirect,
 } from "@/hooks/use-notifications";
 import type {
   CreateNotificationDto,
@@ -53,7 +56,12 @@ export function NotificationForm({ notification, onSuccess }: Props) {
 
   const create = useCreateNotification();
   const update = useUpdateNotification(notification?.id ?? 0);
+  const testById = useTestNotification();
+  const testDirect = useTestNotificationDirect();
   const isPending = create.isPending || update.isPending;
+
+  const [testStatus, setTestStatus] = useState<"idle" | "ok" | "error">("idle");
+  const [testMessage, setTestMessage] = useState("");
 
   function handleConfigChange(key: string, value: unknown) {
     setConfig((prev) => ({ ...prev, [key]: value }));
@@ -79,8 +87,26 @@ export function NotificationForm({ notification, onSuccess }: Props) {
     return result;
   }
 
+  async function handleTest() {
+    setTestStatus("idle");
+    setTestMessage("");
+    try {
+      if (notification) {
+        await testById.mutateAsync(notification.id);
+      } else {
+        await testDirect.mutateAsync({ type, config });
+      }
+      setTestStatus("ok");
+      setTestMessage("Test notification sent successfully!");
+    } catch (err) {
+      setTestStatus("error");
+      setTestMessage(err instanceof Error ? err.message : "Test failed");
+    }
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setTestStatus("idle");
     if (!name.trim()) {
       setNameError("Name is required");
       return;
@@ -171,13 +197,36 @@ export function NotificationForm({ notification, onSuccess }: Props) {
         <p className="text-sm text-destructive">{mutationError.message}</p>
       )}
 
-      <Button type="submit" disabled={isPending} className="w-full">
-        {isPending
-          ? "Saving…"
-          : notification
-            ? "Save changes"
-            : "Create notification"}
-      </Button>
+      {testStatus !== "idle" && (
+        <p className={`flex items-center gap-1.5 text-sm ${testStatus === "ok" ? "text-emerald-600 dark:text-emerald-400" : "text-destructive"}`}>
+          {testStatus === "ok" && <CheckCircle2 className="size-4 shrink-0" />}
+          {testMessage}
+        </p>
+      )}
+
+      <div className="flex gap-2">
+        <Button
+          type="button"
+          variant="outline"
+          disabled={testById.isPending || testDirect.isPending}
+          onClick={handleTest}
+          className="flex-1"
+        >
+          {(testById.isPending || testDirect.isPending) ? (
+            <Loader2 className="size-4 animate-spin" />
+          ) : (
+            <FlaskConical className="size-4" />
+          )}
+          Test
+        </Button>
+        <Button type="submit" disabled={isPending} className="flex-1">
+          {isPending
+            ? "Saving…"
+            : notification
+              ? "Save changes"
+              : "Create"}
+        </Button>
+      </div>
     </form>
   );
 }

@@ -79,6 +79,16 @@ export function useTestNotification() {
   });
 }
 
+export function useTestNotificationDirect() {
+  return useMutation({
+    mutationFn: ({ type, config }: { type: string; config: Record<string, unknown> }) =>
+      apiRequest<void>("/api/v1/notifications/test", {
+        method: "POST",
+        body: JSON.stringify({ type, config }),
+      }),
+  });
+}
+
 export function useMonitorNotifications(monitorId: number) {
   return useQuery({
     queryKey: notificationKeys.monitorAssignments(monitorId),
