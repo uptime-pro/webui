@@ -220,6 +220,12 @@ export function MonitorForm({ monitor, onSuccess }: Props) {
             </SelectGroup>
             <SelectSeparator />
             <SelectGroup>
+              <SelectLabel>Security</SelectLabel>
+              <SelectItem value="ssl-cert">SSL Certificate</SelectItem>
+              <SelectItem value="domain-expiry">Domain Expiry</SelectItem>
+            </SelectGroup>
+            <SelectSeparator />
+            <SelectGroup>
               <SelectLabel>Other</SelectLabel>
               <SelectItem value="manual">Manual</SelectItem>
               <SelectItem value="group">Group</SelectItem>

@@ -15,6 +15,8 @@ import {
   usePauseMonitor,
   useResumeMonitor,
 } from "@/hooks/use-monitors";
+import { cn } from "@/lib/utils";
+import type { Monitor } from "@/types/monitor";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
 
@@ -112,6 +114,18 @@ export default function MonitorOverviewPage({
         </Card>
       </div>
 
+      {/* Expiry metadata for ssl-cert and domain-expiry monitors */}
+      {(monitor.type === 'ssl-cert' || monitor.type === 'domain-expiry') && heartbeats[0]?.meta && (
+        <ExpiryMetaCard monitor={monitor} meta={heartbeats[0].meta as Record<string, unknown>} />
+      )}
+
+      {/* Piggyback SSL check results for http/websocket monitors */}
+      {(monitor.type === 'http' || monitor.type === 'websocket') &&
+        heartbeats[0]?.meta &&
+        !!((heartbeats[0].meta as Record<string, unknown>)['ssl'] || (heartbeats[0].meta as Record<string, unknown>)['domain']) && (
+        <PiggybackExpiryCard meta={heartbeats[0].meta as Record<string, unknown>} />
+      )}
+
       {sla && (
         <Card>
           <CardHeader>
@@ -148,5 +162,129 @@ export default function MonitorOverviewPage({
 
       <BadgeWidget monitorId={id} apiUrl={API_URL} />
     </div>
+  );
+}
+
+function PiggybackExpiryCard({ meta }: { meta: Record<string, unknown> }) {
+  const ssl = meta['ssl'] as Record<string, unknown> | undefined;
+  const domain = meta['domain'] as Record<string, unknown> | undefined;
+
+  function getDaysColor(days: number | null | undefined): string {
+    if (days == null) return 'text-muted-foreground';
+    if (days <= 0) return 'text-destructive';
+    if (days <= 14) return 'text-destructive';
+    if (days <= 30) return 'text-yellow-600 dark:text-yellow-400';
+    return 'text-green-600 dark:text-green-400';
+  }
+
+  function ExpiryRow({ label, data, nameLabel }: {
+    label: string;
+    data: Record<string, unknown>;
+    nameLabel: string;
+  }) {
+    const days = data['daysUntilExpiry'] as number | null | undefined;
+    const expiry = data['expiryDate'] as string | null | undefined;
+    const name = (data['issuer'] ?? data['registrar']) as string | null | undefined;
+    return (
+      <div className="grid grid-cols-3 gap-4 text-center">
+        <div>
+          <p className="text-xs text-muted-foreground mb-1">{label}</p>
+          <p className={cn("text-lg font-bold", getDaysColor(days))}>
+            {days != null ? (days <= 0 ? `${Math.abs(days)}d ago` : `${days}d`) : '—'}
+          </p>
+          <p className="text-xs text-muted-foreground">{days != null && days <= 0 ? 'Expired' : 'Days left'}</p>
+        </div>
+        <div>
+          <p className="text-xs text-muted-foreground mb-1">Expiry date</p>
+          <p className="text-sm font-medium">{expiry ? new Date(expiry).toLocaleDateString() : '—'}</p>
+        </div>
+        <div>
+          <p className="text-xs text-muted-foreground mb-1">{nameLabel}</p>
+          <p className="text-sm font-medium truncate" title={name ?? ''}>{name ?? '—'}</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-sm">Expiry Checks</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        {ssl && <ExpiryRow label="SSL Certificate" data={ssl} nameLabel="Issuer" />}
+        {ssl && domain && <div className="border-t" />}
+        {domain && <ExpiryRow label="Domain Registration" data={domain} nameLabel="Registrar" />}
+      </CardContent>
+    </Card>
+  );
+}
+
+function ExpiryMetaCard({ monitor, meta }: { monitor: Monitor; meta: Record<string, unknown> }) {
+  const daysUntilExpiry = meta['daysUntilExpiry'] as number | null | undefined;
+  const expiryDate = meta['expiryDate'] as string | null | undefined;
+  const certState = (meta['certState'] ?? meta['domainState']) as string | undefined;
+  const issuerOrRegistrar = monitor.type === 'ssl-cert'
+    ? meta['issuer'] as string | undefined
+    : meta['registrar'] as string | undefined;
+
+  function getDaysColor(days: number | null | undefined): string {
+    if (days == null) return 'text-muted-foreground';
+    if (days <= 0) return 'text-destructive';
+    if (days <= 14) return 'text-destructive';
+    if (days <= 30) return 'text-yellow-600 dark:text-yellow-400';
+    return 'text-green-600 dark:text-green-400';
+  }
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-sm">
+          {monitor.type === 'ssl-cert' ? 'Certificate Details' : 'Domain Registration'}
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="grid grid-cols-3 gap-4 text-center">
+          <div>
+            <p className={cn("text-2xl font-bold", getDaysColor(daysUntilExpiry))}>
+              {daysUntilExpiry != null
+                ? daysUntilExpiry <= 0
+                  ? `${Math.abs(daysUntilExpiry)}d ago`
+                  : `${daysUntilExpiry}d`
+                : '—'}
+            </p>
+            <p className="text-xs text-muted-foreground">
+              {(daysUntilExpiry ?? 0) <= 0 ? 'Expired' : 'Days left'}
+            </p>
+          </div>
+          <div>
+            <p className="text-sm font-medium truncate">
+              {expiryDate ? new Date(expiryDate).toLocaleDateString() : '—'}
+            </p>
+            <p className="text-xs text-muted-foreground">Expiry date</p>
+          </div>
+          <div>
+            <p className="text-sm font-medium truncate" title={issuerOrRegistrar ?? ''}>
+              {issuerOrRegistrar ?? '—'}
+            </p>
+            <p className="text-xs text-muted-foreground">
+              {monitor.type === 'ssl-cert' ? 'Issuer' : 'Registrar'}
+            </p>
+          </div>
+        </div>
+        {certState && certState !== 'healthy' && (
+          <p className={cn(
+            "text-xs mt-3 text-center font-medium",
+            certState === 'expired' || certState === 'critical' ? 'text-destructive' : 'text-yellow-600 dark:text-yellow-400'
+          )}>
+            {certState === 'expired' ? '⚠ Certificate/Domain expired' :
+             certState === 'critical' ? '⚠ Expiry within critical threshold' :
+             certState === 'warning' ? '⚠ Expiry within warning threshold' :
+             certState === 'unsupported' ? 'RDAP lookup not supported for this TLD' :
+             certState === 'error' ? 'Lookup failed' : certState}
+          </p>
+        )}
+      </CardContent>
+    </Card>
   );
 }

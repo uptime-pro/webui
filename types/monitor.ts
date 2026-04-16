@@ -52,7 +52,9 @@ export type MonitorType =
   | "smtp"
   | "sip"
   | "manual"
-  | "group";
+  | "group"
+  | "ssl-cert"
+  | "domain-expiry";
 export type MonitorStatus = "up" | "down" | "pending";
 
 export interface Monitor {
@@ -87,6 +89,7 @@ export interface Heartbeat {
   duration: number;
   retries: number;
   createdAt: string;
+  meta?: Record<string, unknown>;
 }
 
 export interface HeartbeatEvent {

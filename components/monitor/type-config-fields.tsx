@@ -47,6 +47,10 @@ export function getDefaultConfigForType(
       return { port: 5060 };
     case "docker":
       return { socketPath: "/var/run/docker.sock" };
+    case "ssl-cert":
+      return { port: 443, warningDays: 30, criticalDays: 14 };
+    case "domain-expiry":
+      return { warningDays: 30, criticalDays: 14 };
     default:
       return {};
   }
@@ -246,6 +250,26 @@ export function TypeConfigFields({
             </div>
           </div>
           {tf("keyword", "Keyword (optional)", "OK")}
+          <div className="border-t pt-3 space-y-3">
+            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Expiry checks</p>
+            {bf('checkSsl', 'Check SSL certificate expiry')}
+            {g('checkSsl', false) && (
+              <div className="grid grid-cols-2 gap-4 pl-4">
+                {pf('sslWarningDays', 'SSL warning (days)', 30)}
+                {pf('sslCriticalDays', 'SSL critical (days)', 14)}
+              </div>
+            )}
+            {bf('checkDomain', 'Check domain registration expiry')}
+            {g('checkDomain', false) && (
+              <div className="grid grid-cols-2 gap-4 pl-4">
+                {pf('domainWarningDays', 'Domain warning (days)', 30)}
+                {pf('domainCriticalDays', 'Domain critical (days)', 14)}
+              </div>
+            )}
+            <p className="text-xs text-muted-foreground">
+              SSL check only runs for https:// URLs. Domain check uses RDAP (not all TLDs supported).
+            </p>
+          </div>
         </>
       );
 
@@ -312,6 +336,19 @@ export function TypeConfigFields({
         <>
           {tf("url", "URL", "ws://example.com/ws")}
           {tf("expectedMessage", "Expected message (optional)", "pong")}
+          <div className="border-t pt-3 space-y-3">
+            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Expiry checks</p>
+            {bf('checkSsl', 'Check SSL certificate expiry (wss:// only)')}
+            {g('checkSsl', false) && (
+              <div className="grid grid-cols-2 gap-4 pl-4">
+                {pf('sslWarningDays', 'SSL warning (days)', 30)}
+                {pf('sslCriticalDays', 'SSL critical (days)', 14)}
+              </div>
+            )}
+            <p className="text-xs text-muted-foreground">
+              SSL check only runs for wss:// WebSocket URLs.
+            </p>
+          </div>
         </>
       );
 
@@ -479,6 +516,39 @@ export function TypeConfigFields({
     case "manual":
     case "group":
       return null;
+
+    case "ssl-cert":
+      return (
+        <>
+          <div className="grid grid-cols-2 gap-4">
+            {tf("host", "Hostname", "example.com")}
+            {pf("port", "Port", 443)}
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            {pf("warningDays", "Warning threshold (days)", 30)}
+            {pf("criticalDays", "Critical threshold (days)", 14)}
+          </div>
+          <p className="text-xs text-muted-foreground">
+            Alert when the certificate expires within the configured number of days.
+            Critical threshold triggers a &quot;down&quot; alert.
+          </p>
+        </>
+      );
+
+    case "domain-expiry":
+      return (
+        <>
+          {tf("domain", "Domain", "example.com")}
+          <div className="grid grid-cols-2 gap-4">
+            {pf("warningDays", "Warning threshold (days)", 30)}
+            {pf("criticalDays", "Critical threshold (days)", 14)}
+          </div>
+          <p className="text-xs text-muted-foreground">
+            Checks domain registration expiry via RDAP. Critical threshold triggers a &quot;down&quot; alert.
+            Note: Not all TLDs support RDAP lookup.
+          </p>
+        </>
+      );
 
     default:
       return null;
