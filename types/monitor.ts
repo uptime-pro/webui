@@ -1,3 +1,34 @@
+export interface SlaStats {
+  slaTarget: number | null;
+  uptimePercent: number;
+  totalChecks: number;
+  upChecks: number;
+}
+
+export interface MonitorExportItem {
+  name: string;
+  type: string;
+  active?: boolean;
+  interval?: number;
+  config: Record<string, unknown>;
+  slaTarget?: number;
+  responseTimeThreshold?: number;
+}
+
+export interface MonitorExportData {
+  version: "1";
+  exportedAt: string;
+  monitors: MonitorExportItem[];
+}
+
+export type MonitorImportItem = MonitorExportItem;
+
+export interface MonitorImportResult {
+  imported: number;
+  skipped: number;
+  errors: string[];
+}
+
 export type MonitorType =
   | "http"
   | "tcp"
@@ -37,6 +68,8 @@ export interface Monitor {
   resendInterval: number;
   upsideDown: boolean;
   config: Record<string, unknown>;
+  slaTarget?: number;
+  responseTimeThreshold?: number;
   lastStatus: boolean | null;
   lastPing: number | null;
   createdAt: string;
