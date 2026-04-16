@@ -9,8 +9,12 @@ export interface StatusPageMonitor {
   id: number;
   name: string;
   type: string;
+  groupName?: string | null;
+  ordering: number;
   lastStatus: "up" | "down" | "pending";
-  lastPing?: number;
+  lastPing?: number | null;
+  uptimePct: number;
+  history: { date: string; up: number; total: number }[];
 }
 
 export interface IncidentUpdate {
@@ -56,9 +60,12 @@ export interface PublicStatusPage {
   id: number;
   title: string;
   slug: string;
-  description?: string;
-  logoUrl?: string;
+  description?: string | null;
+  logoUrl?: string | null;
   published: boolean;
+  footerText?: string | null;
+  theme?: string;
+  customCss?: string | null;
   monitors: StatusPageMonitor[];
   incidents: Incident[];
   maintenanceWindows: MaintenanceWindow[];
