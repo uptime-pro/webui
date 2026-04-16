@@ -34,6 +34,20 @@ export type DragonflyInfo =
     }
   | { status: "error"; error: string };
 
+export type PostgresStats =
+  | {
+      status: "connected";
+      version: string;
+      databaseSize: string;
+      connections: { active: number; idle: number; idleInTransaction: number; waiting: number };
+      transactions: { committed: number; rolledBack: number };
+      cacheHitRate: number;
+      deadlocks: number;
+      conflicts: number;
+      tables: { count: number; totalRows: number; deadRows: number; indexCount: number };
+    }
+  | { status: "error"; error: string };
+
 export function useQueueStats() {
   return useQuery({
     queryKey: ["infrastructure", "queues"],
@@ -47,5 +61,13 @@ export function useDragonflyInfo() {
     queryKey: ["infrastructure", "dragonfly"],
     queryFn: () => apiRequest<DragonflyInfo>("/api/v1/infrastructure/dragonfly"),
     refetchInterval: 10000,
+  });
+}
+
+export function usePostgresStats() {
+  return useQuery({
+    queryKey: ["infrastructure", "postgres"],
+    queryFn: () => apiRequest<PostgresStats>("/api/v1/infrastructure/postgres"),
+    refetchInterval: 15000,
   });
 }

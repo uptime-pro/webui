@@ -10,6 +10,7 @@ import {
   ListChecks,
   RefreshCw,
   Server,
+  Table2,
   Users,
   Zap,
 } from "lucide-react";
@@ -17,8 +18,8 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PageHeader } from "@/components/shell/page-header";
-import { useQueueStats, useDragonflyInfo } from "@/hooks/use-infrastructure";
-import type { QueueStat, QueueCounts, DragonflyInfo } from "@/hooks/use-infrastructure";
+import { useQueueStats, useDragonflyInfo, usePostgresStats } from "@/hooks/use-infrastructure";
+import type { QueueStat, QueueCounts, DragonflyInfo, PostgresStats } from "@/hooks/use-infrastructure";
 
 function formatUptime(seconds: number): string {
   const d = Math.floor(seconds / 86400);
@@ -169,6 +170,166 @@ function DragonflyCard({ info }: { info: DragonflyInfo }) {
   );
 }
 
+function PostgresCard({ stats }: { stats: PostgresStats }) {
+  if (stats.status === "error") {
+    return (
+      <Card>
+        <CardHeader className="pb-3">
+          <div className="flex items-start justify-between">
+            <div className="flex items-center gap-2">
+              <div className="flex size-8 items-center justify-center rounded-md bg-destructive/10">
+                <Database className="size-4 text-destructive" />
+              </div>
+              <div>
+                <CardTitle className="text-sm font-semibold">PostgreSQL</CardTitle>
+                <CardDescription className="text-xs">Database</CardDescription>
+              </div>
+            </div>
+            <Badge variant="destructive">Error</Badge>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <p className="flex items-center gap-1.5 text-sm text-destructive">
+            <AlertCircle className="size-4" />
+            {stats.error}
+          </p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <Card>
+      <CardHeader className="pb-3">
+        <div className="flex items-start justify-between">
+          <div className="flex items-center gap-2">
+            <div className="flex size-8 items-center justify-center rounded-md bg-blue-500/10">
+              <Database className="size-4 text-blue-500" />
+            </div>
+            <div>
+              <CardTitle className="text-sm font-semibold">PostgreSQL</CardTitle>
+              <CardDescription className="text-xs">v{stats.version}</CardDescription>
+            </div>
+          </div>
+          <Badge variant="outline" className="border-green-500/30 text-green-600 dark:text-green-400">
+            <CheckCircle2 className="mr-1 size-3" />
+            Connected
+          </Badge>
+        </div>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+          <div className="rounded-md border bg-muted/40 p-3">
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+              <HardDrive className="size-3.5" />
+              Database Size
+            </div>
+            <p className="mt-1 text-lg font-semibold">{stats.databaseSize}</p>
+          </div>
+          <div className="rounded-md border bg-muted/40 p-3">
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+              <Zap className="size-3.5" />
+              Cache Hit Rate
+            </div>
+            <p className={`mt-1 text-lg font-semibold ${stats.cacheHitRate >= 95 ? "text-green-600 dark:text-green-400" : stats.cacheHitRate >= 80 ? "text-yellow-600 dark:text-yellow-400" : "text-destructive"}`}>
+              {stats.cacheHitRate}%
+            </p>
+          </div>
+          <div className="rounded-md border bg-muted/40 p-3">
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+              <AlertCircle className="size-3.5" />
+              Deadlocks
+            </div>
+            <p className={`mt-1 text-lg font-semibold ${stats.deadlocks > 0 ? "text-destructive" : ""}`}>
+              {stats.deadlocks}
+            </p>
+          </div>
+          <div className="rounded-md border bg-muted/40 p-3">
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+              <Table2 className="size-3.5" />
+              Tables
+            </div>
+            <p className="mt-1 text-lg font-semibold">{stats.tables.count}</p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <p className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+              <Users className="size-3.5" />
+              Connections
+            </p>
+            <div className="space-y-1 text-sm">
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Active</span>
+                <span className="font-medium">{stats.connections.active}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Idle</span>
+                <span className="font-medium">{stats.connections.idle}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Idle in transaction</span>
+                <span className={`font-medium ${stats.connections.idleInTransaction > 0 ? "text-yellow-600 dark:text-yellow-400" : ""}`}>
+                  {stats.connections.idleInTransaction}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Waiting</span>
+                <span className={`font-medium ${stats.connections.waiting > 0 ? "text-yellow-600 dark:text-yellow-400" : ""}`}>
+                  {stats.connections.waiting}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <p className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+              <Activity className="size-3.5" />
+              Transactions
+            </p>
+            <div className="space-y-1 text-sm">
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Committed</span>
+                <span className="font-medium">{stats.transactions.committed.toLocaleString()}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Rolled back</span>
+                <span className={`font-medium ${stats.transactions.rolledBack > 0 ? "text-yellow-600 dark:text-yellow-400" : ""}`}>
+                  {stats.transactions.rolledBack.toLocaleString()}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Conflicts</span>
+                <span className={`font-medium ${stats.conflicts > 0 ? "text-yellow-600 dark:text-yellow-400" : ""}`}>
+                  {stats.conflicts}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Live rows</span>
+                <span className="font-medium">{stats.tables.totalRows.toLocaleString()}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-4 text-xs text-muted-foreground">
+          <span className="flex items-center gap-1">
+            <Table2 className="size-3.5" />
+            {stats.tables.indexCount} indexes
+          </span>
+          {stats.tables.deadRows > 0 && (
+            <>
+              <span>·</span>
+              <span className="text-yellow-600 dark:text-yellow-400">{stats.tables.deadRows.toLocaleString()} dead rows (vacuum recommended)</span>
+            </>
+          )}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
 function CardSkeleton() {
   return (
     <Card>
@@ -195,6 +356,7 @@ function CardSkeleton() {
 export default function InfrastructurePage() {
   const queues = useQueueStats();
   const dragonfly = useDragonflyInfo();
+  const postgres = usePostgresStats();
 
   return (
     <div className="flex flex-col gap-6 p-6">
@@ -205,20 +367,19 @@ export default function InfrastructurePage() {
         />
         <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
           <RefreshCw className="size-3" />
-          Auto-refreshes every 5s
+          Auto-refreshes every 5–15s
         </div>
       </div>
 
       <section className="space-y-3">
         <div className="flex items-center gap-2">
           <Server className="size-4 text-muted-foreground" />
-          <h2 className="text-sm font-medium">Data Store</h2>
+          <h2 className="text-sm font-medium">Data Stores</h2>
         </div>
-        {dragonfly.isLoading ? (
-          <CardSkeleton />
-        ) : dragonfly.data ? (
-          <DragonflyCard info={dragonfly.data} />
-        ) : null}
+        <div className="grid gap-4 lg:grid-cols-2">
+          {dragonfly.isLoading ? <CardSkeleton /> : dragonfly.data ? <DragonflyCard info={dragonfly.data} /> : null}
+          {postgres.isLoading ? <CardSkeleton /> : postgres.data ? <PostgresCard stats={postgres.data} /> : null}
+        </div>
       </section>
 
       <section className="space-y-3">
