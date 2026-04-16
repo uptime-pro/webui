@@ -27,7 +27,7 @@ export function HeartbeatBar({ heartbeats, maxBars = 50 }: Props) {
         {bars.map((hb, i) => (
           // biome-ignore lint/suspicious/noArrayIndexKey: static-length bar with stable positions
           <Tooltip key={i}>
-            <TooltipTrigger asChild>
+            <TooltipTrigger render={
               <div
                 className={cn(
                   "h-8 w-2 rounded-sm",
@@ -38,7 +38,7 @@ export function HeartbeatBar({ heartbeats, maxBars = 50 }: Props) {
                       : "bg-red-500",
                 )}
               />
-            </TooltipTrigger>
+            } />
             {hb && (
               <TooltipContent>
                 <p>

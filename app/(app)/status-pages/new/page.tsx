@@ -52,9 +52,7 @@ export default function NewStatusPagePage() {
   return (
     <div className="p-6 max-w-xl space-y-6">
       <div className="flex items-center gap-4">
-        <Button variant="ghost" size="sm" asChild>
-          <Link href="/status-pages">← Back</Link>
-        </Button>
+        <Button variant="ghost" size="sm" render={<Link href="/status-pages" />}>← Back</Button>
         <h1 className="text-2xl font-bold">New Status Page</h1>
       </div>
 
@@ -116,9 +114,7 @@ export default function NewStatusPagePage() {
           <Button type="submit" disabled={createPage.isPending}>
             {createPage.isPending ? "Creating..." : "Create Status Page"}
           </Button>
-          <Button variant="outline" type="button" asChild>
-            <Link href="/status-pages">Cancel</Link>
-          </Button>
+          <Button variant="outline" type="button" render={<Link href="/status-pages" />}>Cancel</Button>
         </div>
       </form>
     </div>

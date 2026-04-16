@@ -90,9 +90,7 @@ function MaintenanceRow({ window: w }: { window: MaintenanceWindow }) {
             onCheckedChange={handleToggleActive}
             disabled={updateMaintenance.isPending}
           />
-          <Button variant="outline" size="sm" asChild>
-            <Link href={`/maintenance/${w.id}/edit`}>Edit</Link>
-          </Button>
+          <Button variant="outline" size="sm" render={<Link href={`/maintenance/${w.id}/edit`} />}>Edit</Button>
           {confirmDelete ? (
             <div className="flex items-center gap-1">
               <Button
@@ -136,12 +134,10 @@ export default function MaintenancePage() {
         title="Maintenance Windows"
         description="Schedule planned downtime so monitors don't alert during maintenance."
         action={
-          <Button size="sm" asChild>
-            <Link href="/maintenance/new">
+          <Button size="sm" render={<Link href="/maintenance/new" />}>
               <Plus className="h-4 w-4 mr-2" />
               New Window
-            </Link>
-          </Button>
+            </Button>
         }
       />
 
@@ -168,9 +164,7 @@ export default function MaintenancePage() {
           <p className="text-sm text-muted-foreground mt-1">
             Create one to pause alerting during planned maintenance.
           </p>
-          <Button size="sm" className="mt-4" asChild>
-            <Link href="/maintenance/new">New Window</Link>
-          </Button>
+          <Button size="sm" className="mt-4" render={<Link href="/maintenance/new" />}>New Window</Button>
         </div>
       )}
 

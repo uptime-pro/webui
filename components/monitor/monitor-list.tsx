@@ -145,10 +145,8 @@ function MonitorRow({
         </TableCell>
         <TableCell className="w-24 text-right">
           <div className="flex items-center justify-end gap-0.5">
-            <Button size="icon" variant="ghost" className="h-7 w-7" asChild>
-              <Link href={`/monitors/${monitor.id}/edit`} title="Edit">
-                <Edit className="h-3.5 w-3.5" />
-              </Link>
+            <Button size="icon" variant="ghost" className="h-7 w-7" render={<Link href={`/monitors/${monitor.id}/edit`} title="Edit" />}>
+              <Edit className="h-3.5 w-3.5" />
             </Button>
             {monitor.active ? (
               <Button
@@ -508,18 +506,14 @@ export function MonitorList() {
               <SelectItem value="tag">By Tag</SelectItem>
             </SelectContent>
           </Select>
-          <Button asChild size="sm" variant="ghost" className="h-8">
-            <Link href="/monitors/add">
-              <Plus className="h-4 w-4 mr-1" />
+          <Button size="sm" variant="ghost" className="h-8" render={<Link href="/monitors/add" />}>
+            <Plus className="h-4 w-4 mr-1" />
               Add
-            </Link>
-          </Button>
-          <Button asChild size="sm" variant="ghost" className="h-8">
-            <Link href="/monitors/import-export">
-              <Package className="h-4 w-4 mr-1" />
+            </Button>
+          <Button size="sm" variant="ghost" className="h-8" render={<Link href="/monitors/import-export" />}>
+            <Package className="h-4 w-4 mr-1" />
               Import/Export
-            </Link>
-          </Button>
+            </Button>
         </div>
       </div>
 
@@ -564,12 +558,10 @@ export function MonitorList() {
           {total === 0 ? (
             <>
               <p className="text-muted-foreground text-sm">No monitors yet.</p>
-              <Button asChild size="sm">
-                <Link href="/monitors/add">
-                  <Plus className="h-4 w-4 mr-1" />
+              <Button size="sm" render={<Link href="/monitors/add" />}>
+                <Plus className="h-4 w-4 mr-1" />
                   Add Monitor
-                </Link>
-              </Button>
+                </Button>
             </>
           ) : (
             <p className="text-muted-foreground text-sm">

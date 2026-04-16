@@ -113,9 +113,7 @@ export default function StatusPageEditorPage({
         <p className="text-sm text-destructive">
           {error instanceof Error ? error.message : "Status page not found"}
         </p>
-        <Button variant="outline" size="sm" className="mt-4" asChild>
-          <Link href="/status-pages">← Back</Link>
-        </Button>
+        <Button variant="outline" size="sm" className="mt-4" render={<Link href="/status-pages" />}>← Back</Button>
       </div>
     );
   }
@@ -123,9 +121,7 @@ export default function StatusPageEditorPage({
   return (
     <div className="p-6 space-y-6">
       <div className="flex items-center gap-4">
-        <Button variant="ghost" size="sm" asChild>
-          <Link href="/status-pages">← Back</Link>
-        </Button>
+        <Button variant="ghost" size="sm" render={<Link href="/status-pages" />}>← Back</Button>
         <h1 className="text-2xl font-bold truncate">{page.name}</h1>
       </div>
 
@@ -262,10 +258,8 @@ export default function StatusPageEditorPage({
             <p className="text-sm text-muted-foreground">
               Active and recent incidents for this status page.
             </p>
-            <Button asChild>
-              <Link href={`/status-pages/${numId}/incidents`}>
-                Manage Incidents
-              </Link>
+            <Button render={<Link href={`/status-pages/${numId}/incidents`} />}>
+              Manage Incidents
             </Button>
           </div>
           {!incidents?.length && (

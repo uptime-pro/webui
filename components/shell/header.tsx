@@ -95,13 +95,11 @@ export function Header() {
       <div className="flex items-center gap-1">
         <ThemeToggle />
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="size-8 rounded-full">
+          <DropdownMenuTrigger render={<Button variant="ghost" size="icon" className="size-8 rounded-full" />}>
               <Avatar className="size-7">
                 <AvatarFallback className="text-xs">{initials}</AvatarFallback>
               </Avatar>
-            </Button>
-          </DropdownMenuTrigger>
+            </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-48">
             <DropdownMenuLabel className="font-normal py-2">
               <div className="flex flex-col gap-0.5">

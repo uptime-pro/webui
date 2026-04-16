@@ -329,9 +329,7 @@ export default function IncidentsPage({
   return (
     <div className="p-6 space-y-4">
       <div className="flex items-center gap-4">
-        <Button variant="ghost" size="sm" asChild>
-          <Link href={`/status-pages/${numId}`}>← Back</Link>
-        </Button>
+        <Button variant="ghost" size="sm" render={<Link href={`/status-pages/${numId}`} />}>← Back</Button>
         <h1 className="text-2xl font-bold">Incidents</h1>
         <Button className="ml-auto" onClick={() => setCreateDialogOpen(true)}>
           Create Incident

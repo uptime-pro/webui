@@ -62,20 +62,18 @@ export function AppSidebar() {
   }
 
   return (
-    <Sidebar variant="inset" collapsible="icon">
+    <Sidebar collapsible="icon">
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton size="lg" asChild>
-              <Link href="/dashboard">
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+            <SidebarMenuButton size="lg" render={<Link href="/dashboard" />}>
+              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                   <Activity className="size-4" />
                 </div>
                 <div className="flex flex-col gap-0.5 leading-none">
                   <span className="font-semibold">Uptime Pro</span>
                   <span className="text-xs text-muted-foreground">Monitoring</span>
                 </div>
-              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
@@ -87,12 +85,10 @@ export function AppSidebar() {
             <SidebarMenu>
               {navMain.map(({ href, label, icon: Icon }) => (
                 <SidebarMenuItem key={href}>
-                  <SidebarMenuButton asChild isActive={isActive(href)}>
-                    <Link href={href}>
+                  <SidebarMenuButton isActive={isActive(href)} render={<Link href={href} />}>
                       <Icon />
                       <span>{label}</span>
-                    </Link>
-                  </SidebarMenuButton>
+                    </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
@@ -105,12 +101,10 @@ export function AppSidebar() {
             <SidebarMenu>
               {navSettings.map(({ href, label, icon: Icon, matchPrefix }) => (
                 <SidebarMenuItem key={href}>
-                  <SidebarMenuButton asChild isActive={isActive(href, matchPrefix)}>
-                    <Link href={href}>
+                  <SidebarMenuButton isActive={isActive(href, matchPrefix)} render={<Link href={href} />}>
                       <Icon />
                       <span>{label}</span>
-                    </Link>
-                  </SidebarMenuButton>
+                    </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
@@ -124,25 +118,21 @@ export function AppSidebar() {
               <SidebarMenu>
                 {navAdmin.map(({ href, label, icon: Icon }) => (
                   <SidebarMenuItem key={href}>
-                    <SidebarMenuButton asChild isActive={isActive(href)}>
-                      <Link href={href}>
+                    <SidebarMenuButton isActive={isActive(href)} render={<Link href={href} />}>
                         <Icon />
                         <span>{label}</span>
-                      </Link>
-                    </SidebarMenuButton>
+                      </SidebarMenuButton>
                   </SidebarMenuItem>
                 ))}
                 <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
-                    <a
+                  <SidebarMenuButton render={<a
                       href={`${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001"}/admin/queues`}
                       target="_blank"
                       rel="noopener noreferrer"
-                    >
+                    />}>
                       <Layers />
                       <span>Queue Inspector</span>
-                    </a>
-                  </SidebarMenuButton>
+                    </SidebarMenuButton>
                 </SidebarMenuItem>
               </SidebarMenu>
             </SidebarGroupContent>

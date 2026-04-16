@@ -217,7 +217,7 @@ export function TypeConfigFields({
               <Label>Method</Label>
               <Select
                 value={String(g("method", "GET"))}
-                onValueChange={(v) => s("method", v)}
+                onValueChange={(v) => s("method", v ?? "GET")}
               >
                 <SelectTrigger>
                   <SelectValue />
@@ -288,7 +288,7 @@ export function TypeConfigFields({
               <Label>Record type</Label>
               <Select
                 value={String(g("type", "A"))}
-                onValueChange={(v) => s("type", v)}
+                onValueChange={(v) => s("type", v ?? "A")}
               >
                 <SelectTrigger>
                   <SelectValue />

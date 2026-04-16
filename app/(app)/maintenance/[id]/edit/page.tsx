@@ -30,9 +30,7 @@ export default function EditMaintenancePage({
     return (
       <div className="p-6">
         <p className="text-muted-foreground">Maintenance window not found.</p>
-        <Button variant="outline" size="sm" className="mt-4" asChild>
-          <Link href="/maintenance">← Back</Link>
-        </Button>
+        <Button variant="outline" size="sm" className="mt-4" render={<Link href="/maintenance" />}>← Back</Button>
       </div>
     );
   }
@@ -40,9 +38,7 @@ export default function EditMaintenancePage({
   return (
     <div className="max-w-xl mx-auto p-6">
       <div className="flex items-center gap-4 mb-6">
-        <Button variant="ghost" size="sm" asChild>
-          <Link href="/maintenance">← Back</Link>
-        </Button>
+        <Button variant="ghost" size="sm" render={<Link href="/maintenance" />}>← Back</Button>
         <h1 className="text-2xl font-bold">Edit Maintenance Window</h1>
       </div>
       <MaintenanceForm

@@ -26,8 +26,8 @@ export default function MonitorDetailLayout({
         <Tabs value={pathname}>
           <TabsList>
             {tabs.map((tab) => (
-              <TabsTrigger key={tab.href} value={tab.href} asChild>
-                <Link href={tab.href}>{tab.label}</Link>
+              <TabsTrigger key={tab.href} value={tab.href} render={<Link href={tab.href} />}>
+                {tab.label}
               </TabsTrigger>
             ))}
           </TabsList>

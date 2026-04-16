@@ -10,9 +10,7 @@ export default function NewMaintenancePage() {
   return (
     <div className="max-w-xl mx-auto p-6">
       <div className="flex items-center gap-4 mb-6">
-        <Button variant="ghost" size="sm" asChild>
-          <Link href="/maintenance">← Back</Link>
-        </Button>
+        <Button variant="ghost" size="sm" render={<Link href="/maintenance" />}>← Back</Button>
         <h1 className="text-2xl font-bold">New Maintenance Window</h1>
       </div>
       <MaintenanceForm onSuccess={() => router.push("/maintenance")} />

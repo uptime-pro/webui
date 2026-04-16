@@ -165,7 +165,7 @@ export function MonitorForm({ monitor, onSuccess }: Props) {
       {/* Type selector — grouped */}
       <div className="space-y-1.5">
         <Label>Type</Label>
-        <Select value={form.type} onValueChange={handleTypeChange}>
+        <Select value={form.type} onValueChange={(v) => handleTypeChange(v as MonitorType)}>
           <SelectTrigger className="w-full">
             <SelectValue />
           </SelectTrigger>

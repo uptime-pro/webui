@@ -86,11 +86,9 @@ export default function ImportExportPage() {
   return (
     <div className="p-6 max-w-2xl space-y-6">
       <div className="flex items-center gap-3">
-        <Button asChild variant="ghost" size="sm">
-          <Link href="/dashboard">
-            <ArrowLeft className="h-4 w-4 mr-1" />
-            Back
-          </Link>
+        <Button variant="ghost" size="sm" render={<Link href="/dashboard" />}>
+          <ArrowLeft className="h-4 w-4 mr-1" />
+          Back
         </Button>
         <div>
           <h1 className="text-2xl font-bold">Import / Export</h1>

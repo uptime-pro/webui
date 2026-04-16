@@ -42,9 +42,7 @@ function StatusPageRow({ page }: { page: StatusPage }) {
           </p>
         </div>
         <div className="flex items-center gap-2 shrink-0">
-          <Button variant="outline" size="sm" asChild>
-            <Link href={`/status-pages/${page.id}`}>Edit</Link>
-          </Button>
+          <Button variant="outline" size="sm" render={<Link href={`/status-pages/${page.id}`} />}>Edit</Button>
           {confirmDelete ? (
             <div className="flex items-center gap-1">
               <Button
@@ -88,12 +86,10 @@ export default function StatusPagesPage() {
         title="Status Pages"
         description="Public pages showing the status of your monitored services."
         action={
-          <Button size="sm" asChild>
-            <Link href="/status-pages/new">
+          <Button size="sm" render={<Link href="/status-pages/new" />}>
               <Plus className="h-4 w-4 mr-2" />
               New Status Page
-            </Link>
-          </Button>
+            </Button>
         }
       />
 
@@ -118,9 +114,7 @@ export default function StatusPagesPage() {
           <p className="text-sm text-muted-foreground mt-1">
             Create your first status page to get started.
           </p>
-          <Button size="sm" className="mt-4" asChild>
-            <Link href="/status-pages/new">New Status Page</Link>
-          </Button>
+          <Button size="sm" className="mt-4" render={<Link href="/status-pages/new" />}>New Status Page</Button>
         </div>
       )}
 
