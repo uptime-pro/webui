@@ -88,9 +88,15 @@ export function useResumeMonitor() {
 }
 
 export function useManualCheck() {
+  const qc = useQueryClient();
   return useMutation({
     mutationFn: (id: number) =>
       apiRequest(`/api/v1/monitors/${id}/check`, { method: "POST" }),
+    onSuccess: (_data, id) => {
+      qc.invalidateQueries({ queryKey: monitorKeys.detail(id) });
+      qc.invalidateQueries({ queryKey: monitorKeys.heartbeats(id) });
+      qc.invalidateQueries({ queryKey: monitorKeys.list() });
+    },
   });
 }
 

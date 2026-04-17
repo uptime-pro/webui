@@ -6,6 +6,7 @@ import { QueryProvider } from "@/components/query-provider";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Inter } from "next/font/google";
 import { cn } from "@/lib/utils";
+import { Toaster } from "sonner";
 
 const inter = Inter({subsets:['latin'],variable:'--font-sans'});
 
@@ -50,6 +51,7 @@ export default function RootLayout({
             <AuthProvider>
               {children}
               {modal}
+              <Toaster richColors position="bottom-right" />
             </AuthProvider>
           </QueryProvider>
         </ThemeProvider>

@@ -1,5 +1,7 @@
 "use client";
 import { use } from "react";
+import { Loader2, RefreshCw } from "lucide-react";
+import { toast } from "sonner";
 import { BadgeWidget } from "@/components/monitor/badge-widget";
 import { HeartbeatBar } from "@/components/monitor/heartbeat-bar";
 import { SlaBadge } from "@/components/monitor/sla-badge";
@@ -56,10 +58,19 @@ export default function MonitorOverviewPage({
           <Button
             size="sm"
             variant="outline"
-            onClick={() => check.mutate(id)}
+            onClick={() =>
+              check.mutate(id, {
+                onSuccess: () => toast.success("Check complete — results updated"),
+                onError: () => toast.error("Check failed"),
+              })
+            }
             disabled={check.isPending}
           >
-            Check now
+            {check.isPending ? (
+              <><Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" />Checking…</>
+            ) : (
+              <><RefreshCw className="h-3.5 w-3.5 mr-1.5" />Check now</>
+            )}
           </Button>
           {monitor.active ? (
             <Button
